@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING
 SECRET_KEY = environ.get("DJANGO_SECRET_KEY")
 DEBUG = True
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 INSTALLED_APPS = [
@@ -36,8 +36,7 @@ ROOT_URLCONF = "social_net_mele.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / 'templates']
-        ,
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -58,7 +57,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "OPTIONS": {
             "service": "social_net",
-        }
+        },
     }
 }
 
@@ -79,16 +78,18 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Internationalization
-LANGUAGE_CODE = "ru"
+LANGUAGE_CODE = "en-us"
 TIME_ZONE = "Europe/Moscow"
 USE_I18N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = "static/"
-STATICFILES_DIRS = (
-    BASE_DIR / STATIC_URL,
-)
+STATICFILES_DIRS = (BASE_DIR / STATIC_URL,)
+
+# Media
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / MEDIA_URL
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
