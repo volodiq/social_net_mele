@@ -1,18 +1,23 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.views.decorators.http import require_POST
 
-from .forms import LoginForm, RegistrationForm
+from .forms import ChangePasswordForm, LoginForm, RegistrationForm
 from .models import Profile
+
+
+def is_ajax(request) -> bool:
+    """Является ли запрос ajax-запросом"""
+    return request.headers.get("X-Requested-With") == "XMLHttpRequest"
 
 
 @require_POST
 def user_login(request):
     """Авторизация пользователя"""
-    is_ajax = request.headers.get("X-Requested-With") == "XMLHttpRequest"
-    if not is_ajax:
-        return redirect("accounts:index")
+    if not is_ajax(request):
+        return redirect("index:index")
 
     form = LoginForm(request.POST)
     if form.is_valid():
@@ -29,9 +34,8 @@ def user_login(request):
 @require_POST
 def user_registration(request):
     """Регистрация пользователя"""
-    is_ajax = request.headers.get("X-Requested-With") == "XMLHttpRequest"
-    if not is_ajax:
-        return redirect("accounts:index")
+    if not is_ajax(request):
+        return redirect("index:index")
 
     form = RegistrationForm(request.POST)
     if form.is_valid():
@@ -46,7 +50,32 @@ def user_registration(request):
     return JsonResponse({"registration_status": "fail", "reg_errors": form_errors})
 
 
+@login_required
 def user_logout(request):
     """Выход из аккаунта пользователем"""
     logout(request)
     return redirect("index:index")
+
+
+@require_POST
+@login_required
+def user_change_password(request):
+    """Смена пароля пользователя"""
+    if not is_ajax(request):
+        return redirect("index:index")
+
+    form = ChangePasswordForm(request.POST)
+
+    if not form.is_valid():
+        return JsonResponse({"change_password_status": "fail"})
+
+    cd = form.cleaned_data
+    user = request.user
+
+    if not user.check_password(cd["current_password"]):
+        return JsonResponse({"change_password_status": "fail"})
+
+    user.set_password(cd["new_password"])
+    user.save()
+
+    return JsonResponse({"change_password_status": "success"})

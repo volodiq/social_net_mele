@@ -1,5 +1,4 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 
@@ -65,3 +64,18 @@ class RegistrationForm(forms.ModelForm):
         if cd.get("password1") != cd.get("password2"):
             raise ValidationError("Passwords don't match")
         return cd.get("password2")
+
+
+class ChangePasswordForm(forms.Form):
+    """Форма смены пароля пользователя"""
+
+    current_password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={"class": "form-control", "placeholder": "CURRENT PASSWORD*"}
+        )
+    )
+    new_password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={"class": "form-control", "placeholder": "NEW PASSWORD*"}
+        )
+    )
