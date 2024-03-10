@@ -11,9 +11,9 @@
 <body>
 {# Скрипт для получения Cookie #}
 <script src="{% static 'cookie.js' %}"></script>
-{# Модальное окно #}
+{# Модальные окна #}
 {% include 'accounts/login.html' %}
-
+{% include 'accounts/registration.html' %}
 
 <!-- https://freecodez.com -->
 <nav>
@@ -37,6 +37,10 @@
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
                     Login
                 </button>
+            
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registrationModal">
+                    Registration
+                </button>
             </div>
         {% endif %}
     </div>
@@ -46,7 +50,6 @@
 
     <div class="container">
         <div class="middle">
-
             {# Stories #} <!-- TODO friends stories -->
             <div class="stories">
                 <div class="story">

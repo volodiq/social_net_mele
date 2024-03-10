@@ -1,44 +1,50 @@
-<!-- Модальное окно входа в аккаунт -->
-<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+{# Модальное окно регистрации пользователя #}
+<div class="modal fade" id="registrationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                <h5 class="modal-title" id="loginModalLabel">Registration</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
             </div>
 
-            <form id="login_form">
+            <form id="registration_form">
                 <div class="modal-body">
 
-                    <div class="alert alert-danger" style="display: none" id="errors"></div>
+                    <div class="alert alert-danger" style="display: none" id="reg_errors"></div>
 
                     <!-- Email input -->
                     <div class="form-outline mb-4">
                         <label class="form-label" for="form2Example1">Username</label>
-                        {{ login_form.username }}
+                        {{ registration_form.username }}
                     </div>
 
                     <!-- Password input -->
                     <div class="form-outline mb-4">
                         <label class="form-label" for="form2Example2">Password</label>
-                        {{ login_form.password }}
+                        {{ registration_form.password1 }}
                     </div>
 
-                    <!-- 2 column grid layout for inline styling -->
-                    <div class="row mb-4">
-                        <div class="col d-flex justify-content-center">
-                            <!-- Checkbox -->
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="form2Example31" checked/>
-                                <label class="form-check-label" for="form2Example31"> Remember me </label>
-                            </div>
-                        </div>
+                    <div class="form-outline mb-4">
+                        <label class="form-label" for="form2Example2">Password confirm</label>
+                        {{ registration_form.password2 }}
+                    </div>
 
-                        <div class="col">
-                            <!-- Simple link -->
-                            <a href="#!">Forgot password?</a>
-                        </div>
+                    <!-- Email -->
+                    <div class="form-outline mb-4">
+                        <label class="form-label" for="form2Example2">Email</label>
+                        {{ registration_form.email }}
+                    </div>
+
+                    <!-- Name -->
+                    <div class="form-outline mb-4">
+                        <label class="form-label" for="form2Example2">First name</label>
+                        {{ registration_form.first_name }}
+                    </div>
+
+                    <div class="form-outline mb-4">
+                        <label class="form-label" for="form2Example2">Last name</label>
+                        {{ registration_form.last_name }}
                     </div>
 
                     <!-- Submit button -->
@@ -46,9 +52,7 @@
 
                     <!-- Register buttons -->
                     <div class="text-center">
-                        <p>Not a member? <a href="#!">Register</a></p>
                         <p>or sign up with:</p>
-
                         <button type="button" class="btn btn-link btn-floating mx-1">
                             <i class="fab fa-google"></i>
                             <img width="28" height="28" src="https://img.icons8.com/color/48/google-logo.png"
@@ -71,20 +75,19 @@
                                  alt="external-github-with-cat-logo-an-online-community-for-software-development-logo-shadow-tal-revivo"/>
                         </button>
                     </div>
-
                 </div>
-
             </form>
         </div>
     </div>
 </div>
 
+{# Ajax запрос #}
 <script>
 
-    function ajaxLogin(event) {
+    function ajaxRegistration(event) {
         let formData = new FormData(event.target);
         event.preventDefault()
-        fetch("{% url 'accounts:login' %}", {
+        fetch("{% url 'accounts:registration' %}", {
             method: 'POST',
             credentials: 'same-origin',
             headers: {
@@ -93,6 +96,7 @@
             },
             body: formData,
         })
+
             .then(
                 response => {
                     return response.json()
@@ -100,16 +104,18 @@
             )
             .then(
                 data => {
-                    if (data["login_status"] === "success") {
+                    console.log(data)
+                    if (data["registration_status"] === "success") {
                         location.href = "{% url 'index:index' %}"
                     } else {
-                        let errorsEl = document.getElementById("errors")
+                        let errorsEl = document.getElementById("reg_errors")
                         errorsEl.style.display = "block"
-                        errorsEl.innerText = "Incorrect password or login"
+                        errorsEl.innerHTML = data["reg_errors"]
+                        console.log(data["reg_errors"])
                     }
                 }
             )
     }
 
-    document.getElementById("login_form").onsubmit = ajaxLogin
+    document.getElementById("registration_form").onsubmit = ajaxRegistration
 </script>

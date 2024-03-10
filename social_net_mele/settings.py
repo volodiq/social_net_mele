@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Project applications
+    "index.apps.IndexConfig",
     "accounts.apps.AccountsConfig",
 ]
 

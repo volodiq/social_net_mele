@@ -4,6 +4,7 @@ from .settings import DEBUG, MEDIA_ROOT, MEDIA_URL
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("", include("index.urls")),
     path("accounts/", include("accounts.urls")),
 ]
 
