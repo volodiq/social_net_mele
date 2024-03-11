@@ -1,13 +1,12 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.contrib.auth.models import User
 
 
 class Profile(models.Model):
     """Профиль пользователя"""
 
     user = models.OneToOneField(
-        User,
+        get_user_model(),
         related_name="profile",
         verbose_name="user profile",
         on_delete=models.CASCADE,

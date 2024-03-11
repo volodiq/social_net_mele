@@ -8,7 +8,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
             </div>
 
-            <form id="login_form" method="post">
+            <form id="login_form">
                 <div class="modal-body">
 
                     <div class="alert alert-danger" style="display: none" id="errors"></div>
@@ -37,7 +37,7 @@
 
                         <div class="col">
                             <!-- Simple link -->
-                            <a href="#!">Forgot password?</a>
+                            <a href="#">Forgot password?</a>
                         </div>
                     </div>
 
@@ -46,13 +46,14 @@
 
                     <!-- Register buttons -->
                     <div class="text-center">
-                        <p>Not a member? <a href="#!">Register</a></p>
+                        <p>Not a member? <a href="#">Register</a></p>
                         <p>or sign up with:</p>
 
                         <button type="button" class="btn btn-link btn-floating mx-1">
-                            <i class="fab fa-google"></i>
-                            <img width="28" height="28" src="https://img.icons8.com/color/48/google-logo.png"
-                                 alt="google-logo"/>
+                            <a href="{% url 'social:begin' 'google-oauth2' %}">
+                                <img width="28" height="28" src="https://img.icons8.com/color/48/google-logo.png"
+                                     alt="google-logo"/>
+                            </a>
                         </button>
 
                         <button type="button" class="btn btn-link btn-floating mx-1">

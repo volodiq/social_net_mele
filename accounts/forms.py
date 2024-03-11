@@ -65,6 +65,15 @@ class RegistrationForm(forms.ModelForm):
             raise ValidationError("Passwords don't match")
         return cd.get("password2")
 
+    def clean_email(self):
+        cd = self.cleaned_data
+        user = get_user_model()
+
+        if user.objects.get(email=cd.get("email")).exist():
+            raise ValidationError("Email already registered")
+
+        return cd.get("email")
+
 
 class ChangePasswordForm(forms.Form):
     """Форма смены пароля пользователя"""
@@ -79,3 +88,9 @@ class ChangePasswordForm(forms.Form):
             attrs={"class": "form-control", "placeholder": "NEW PASSWORD*"}
         )
     )
+
+
+class AccountSettingsForm(forms.Form):
+    """Настройки аккаунта пользователя"""
+
+    image = forms.ImageField()

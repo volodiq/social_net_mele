@@ -14,6 +14,7 @@
                 <h5>Change password</h5>
                 <hr>
                 <form method="post" id="change_password_form">
+                    {% csrf_token %}
                     <div class="change_messages" style="display: none"></div>
                     <div class="form-outline mb-4">
                         <label class="form-label" for="form2Example1">Current password</label>
@@ -26,6 +27,16 @@
                     </div>
                     <button type="submit" class="btn btn-primary">Apply</button>
                 </form>
+                <br>
+                <div class="clearfix"></div>
+                <!-- Other settings -->
+                <h5>Profile settings</h5>
+                <hr>
+                <form method="post" id="change_image_form">
+                    {{ account_settings_form }}
+                    <button type="submit">Apply</button>
+                </form>
+
                 <hr>
 
                 <a class="btn btn-primary" href="{% url 'accounts:logout' %}">Logout</a>
@@ -37,7 +48,6 @@
 </div>
 
 <script>
-
     function ajaxChangePassword(event) {
         let formData = new FormData(event.target);
         event.preventDefault()
@@ -57,14 +67,11 @@
             )
             .then(
                 data => {
-                    console.log(data)
                     let changeMsgEl = document.getElementById("change_messages")
                     if (data["change_password_status"] === "success") {
-                        console.log(123)
                         changeMsgEl.style.display = "block"
                         changeMsgEl.innerText = "Password has been changed"
                     } else {
-                        console.log(321)
                         changeMsgEl.style.display = "block"
                         changeMsgEl.innerText = "Incorrect password"
                     }
@@ -73,6 +80,35 @@
     }
 
     document.getElementById("change_password_form").onsubmit = ajaxChangePassword
+
+    function ajaxChangeImage(event) {
+
+        event.preventDefault()
+
+        let formData = new FormData(event.target)
+
+        fetch("{% url 'accounts:change_image' %}", {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                body: formData
+            }
+        )
+            .then(
+                response => {
+                    return response.json()
+                }
+            )
+            .then(data =>{
+                console.log(data)
+            })
+
+    }
+
+    document.getElementById("change_image_form").onsubmit = ajaxChangeImage
 </script>
 
 

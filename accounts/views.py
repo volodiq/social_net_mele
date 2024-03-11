@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.views.decorators.http import require_POST
 
-from .forms import ChangePasswordForm, LoginForm, RegistrationForm
+from .forms import AccountSettingsForm, ChangePasswordForm, LoginForm, RegistrationForm
 from .models import Profile
 
 
@@ -20,15 +20,19 @@ def user_login(request):
         return redirect("index:index")
 
     form = LoginForm(request.POST)
-    if form.is_valid():
-        cd = form.cleaned_data
-        username = cd.get("username")
-        password = cd.get("password")
-        user = authenticate(request, username=username, password=password)
-        if user and user.is_active:
-            login(request, user)
-            return JsonResponse({"login_status": "success"})
-    return JsonResponse({"login_status": "fail"})
+
+    if not form.is_valid():
+        return JsonResponse({"login_status": "fail"})
+
+    cd = form.cleaned_data
+    username = cd.get("username")
+    password = cd.get("password")
+
+    user = authenticate(request, username=username, password=password)
+
+    if user and user.is_active:
+        login(request, user)
+        return JsonResponse({"login_status": "success"})
 
 
 @require_POST
@@ -38,16 +42,18 @@ def user_registration(request):
         return redirect("index:index")
 
     form = RegistrationForm(request.POST)
-    if form.is_valid():
-        new_user = form.save(commit=False)
-        new_user.set_password(form.cleaned_data["password1"])
-        new_user.save()
-        Profile.objects.create(user=new_user)
-        return JsonResponse({"registration_status": "success"})
 
-    form_errors = str(form.errors)
+    if not form.is_valid():
+        form_errors = str(form.errors)
+        return JsonResponse({"registration_status": "fail", "reg_errors": form_errors})
 
-    return JsonResponse({"registration_status": "fail", "reg_errors": form_errors})
+    new_user = form.save(commit=False)
+    new_user.set_password(form.cleaned_data["password1"])
+    new_user.save()
+
+    Profile.objects.create(user=new_user)
+
+    return JsonResponse({"registration_status": "success"})
 
 
 @login_required
@@ -79,3 +85,22 @@ def user_change_password(request):
     user.save()
 
     return JsonResponse({"change_password_status": "success"})
+
+
+@require_POST
+@login_required
+def user_change_image(request):
+    """Смена аватарки пользователя"""
+    if not is_ajax(request):
+        return redirect("index:index")
+
+    form = AccountSettingsForm(files=request.FILES)
+
+    if not form.is_valid():
+        return JsonResponse({"account_settings_status": "fail"})
+
+    user = request.user
+    user.profile.image = form.cleaned_data["image"]
+    user.profile.save()
+
+    return JsonResponse({"account_settings_status": "success"})
