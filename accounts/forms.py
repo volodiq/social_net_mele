@@ -69,7 +69,7 @@ class RegistrationForm(forms.ModelForm):
         cd = self.cleaned_data
         user = get_user_model()
 
-        if user.objects.get(email=cd.get("email")).exist():
+        if user.objects.filter(email=cd.get("email")).exists():
             raise ValidationError("Email already registered")
 
         return cd.get("email")

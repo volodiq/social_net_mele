@@ -9,6 +9,7 @@ urlpatterns = [
     path("", include("index.urls")),
     path("accounts/", include("accounts.urls")),
     path("social_auth/", include("social_django.urls", namespace="social_auth")),
+    path("posts/", include("posts.urls")),
 ]
 
 if DEBUG:

@@ -1,0 +1,64 @@
+<!-- Модальное окно создания поста -->
+<div class="modal fade" id="postCreateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="postCreateModalLabel">Post create</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+
+            <form id="post_create_form">
+                <div class="modal-body">
+
+                    <div class="form-outline mb-4">
+                        {{ post_create_form }}
+                    </div>
+                    
+                    
+
+                    <!-- Submit button -->
+                    <input type="submit" value="Create" class="btn btn-primary btn-block mb-4">
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function ajaxLogin(event) {
+        let formData = new FormData(event.target);
+        event.preventDefault()
+        fetch("{% url 'accounts:login' %}", {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            body: formData,
+        })
+            .then(
+                response => {
+                    return response.json()
+                }
+            )
+            .then(
+                data => {
+                    if (data["login_status"] === "success") {
+                        location.href = "{% url 'index:index' %}"
+                    } else {
+                        let errorsEl = document.getElementById("errors")
+                        errorsEl.style.display = "block"
+                        errorsEl.innerText = "Incorrect password or login"
+                    }
+                }
+            )
+    }
+
+    document.getElementById("post_create_form").onsubmit = ajaxLogin
+</script>
+
+

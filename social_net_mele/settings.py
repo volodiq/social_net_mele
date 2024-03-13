@@ -20,9 +20,11 @@ INSTALLED_APPS = [
     # Packages
     "social_django",
     "django_extensions",
+    "easy_thumbnails",
     # Project applications
     "index.apps.IndexConfig",
     "accounts.apps.AccountsConfig",
+    "posts.apps.PostsConfig",
 ]
 
 MIDDLEWARE = [

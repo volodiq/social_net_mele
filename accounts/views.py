@@ -4,13 +4,10 @@ from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.views.decorators.http import require_POST
 
-from .forms import AccountSettingsForm, ChangePasswordForm, LoginForm, RegistrationForm
-from .models import Profile
-
-
-def is_ajax(request) -> bool:
-    """Является ли запрос ajax-запросом"""
-    return request.headers.get("X-Requested-With") == "XMLHttpRequest"
+from accounts.forms import (AccountSettingsForm, ChangePasswordForm, LoginForm,
+                            RegistrationForm)
+from accounts.models import Profile
+from index.views import is_ajax
 
 
 @require_POST
@@ -33,6 +30,8 @@ def user_login(request):
     if user and user.is_active:
         login(request, user)
         return JsonResponse({"login_status": "success"})
+
+    return JsonResponse({"login_status": "fail"})
 
 
 @require_POST
