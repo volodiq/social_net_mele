@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from index.views import is_ajax
 from posts.forms import PostCreateForm, PostFastCreateForm
 from posts.models import Post
+from actions.utils import create_action
 
 
 @login_required
@@ -13,7 +14,7 @@ from posts.models import Post
 def create_post(request):
     """Создание поста"""
     if not is_ajax(request):
-        return redirect("index:index")
+        return redirect("<Up>index:index")
 
     form = PostCreateForm(request.POST)
 
@@ -22,9 +23,12 @@ def create_post(request):
 
     cd = form.cleaned_data
 
-    Post.objects.create(
+    post = Post(
         author=request.user, text=cd.get("text"), image=request.FILES.get("image")
     )
+    post.save()
+
+    create_action(request.user, "Create post", post)
 
     return JsonResponse({"create_post_status": "success"})
 
@@ -41,7 +45,10 @@ def fast_create_post(request):
     if not form.is_valid():
         return redirect("index:index")
 
-    Post.objects.create(author=request.user, text=form.cleaned_data["text"])
+    post = Post(author=request.user, text=form.cleaned_data["text"])
+    post.save()
+
+    create_action(request.user, "Create post", post)
 
     return JsonResponse({"create_post_status": "success"})
 
@@ -61,5 +68,6 @@ def like(request):
         return JsonResponse({"like_status": "remove"})
 
     post.users_like.add(request.user)
+    create_action(request.user, "like", post)
 
     return JsonResponse({"like_status": "add"})
