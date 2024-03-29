@@ -15,8 +15,6 @@
                         {{ post_create_form }}
                     </div>
                     
-                    
-
                     <!-- Submit button -->
                     <input type="submit" value="Create" class="btn btn-primary btn-block mb-4">
                 </div>
@@ -31,7 +29,7 @@
     function ajaxLogin(event) {
         let formData = new FormData(event.target);
         event.preventDefault()
-        fetch("{% url 'accounts:login' %}", {
+        fetch("{% url 'posts:create' %}", {
             method: 'POST',
             credentials: 'same-origin',
             headers: {

@@ -93,4 +93,4 @@ class ChangePasswordForm(forms.Form):
 class AccountSettingsForm(forms.Form):
     """Настройки аккаунта пользователя"""
 
-    image = forms.ImageField()
+    image = forms.ImageField(widget=forms.FileInput(attrs={"id": "accountImage"}))

@@ -27,7 +27,6 @@ class PostCreateForm(forms.ModelForm):
             "text": forms.Textarea(
                 attrs={
                     "placeholder": "Text...",
-                    "id": "create-post",
                 }
             )
         }

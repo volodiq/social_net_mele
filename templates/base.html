@@ -192,17 +192,17 @@
                         </div>
 
                         <div class="liked-by">
-                            <a onclick="ajaxLike({{ post.pk }})" class="link-danger link-underline-opacity-0"
-                               style="font-size: 13px">
+                            <a onclick="ajaxLike({{ post.pk }})" class="link-underline-opacity-100 nav-link"
+                               style="font-size: 13px; cursor:pointer; color: {% if user in post.users_like.all %} red {% else %} grey {% endif %}"
+                               id="like_button_{{ post.pk }}">
                                 <b>❤ Like</b>
                             </a>
-                            <p>
-                                {% for user_like in post.users_like.all %}
-                                    {{ user_like }}
-                                {% empty %}
-                                    Nobody like this post
-                                {% endfor %}
+
+                            <p id="like_count_{{ post.pk }}">
+                                    {{ post.users_like.count }}
                             </p>
+                            &nbsp; {# символ пробела #}
+                            likes
                         </div>
 
                         <div class="caption">
@@ -233,7 +233,19 @@
                                 return response.json()
                             })
                             .then(data => {
-                                    console.log(data)
+
+                                    let likeButEl = document.getElementById(`like_button_${post_id}`)
+                                    let likeCountEl = document.getElementById(`like_count_${post_id}`)
+                                    let curLikesCount = parseInt(likeCountEl.innerText)
+
+                                    if (data["like_status"] === "add") {
+                                        likeButEl.style.color = "red"
+                                        likeCountEl.innerText = (curLikesCount + 1)
+                                    } else {
+                                        likeButEl.style.color = "gray"
+                                        likeCountEl.innerText = (curLikesCount - 1)
+                                    }
+
                                 }
                             )
                     }
@@ -728,8 +740,8 @@
 
 
 <script src="{% static 'appearance.js' %}"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
+<script src="{% static 'scroll.js' %}"></script>
 
 </body>
 </html>

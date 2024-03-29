@@ -1,7 +1,12 @@
 from django.shortcuts import render
+from django.core.paginator import Paginator
 
-from accounts.forms import (AccountSettingsForm, ChangePasswordForm, LoginForm,
-                            RegistrationForm)
+from accounts.forms import (
+    AccountSettingsForm,
+    ChangePasswordForm,
+    LoginForm,
+    RegistrationForm,
+)
 from posts.forms import PostCreateForm, PostFastCreateForm
 from posts.models import Post
 
@@ -34,3 +39,7 @@ def index_view(request):
 def is_ajax(request) -> bool:
     """Является ли запрос ajax-запросом"""
     return request.headers.get("X-Requested-With") == "XMLHttpRequest"
+
+
+def load_posts(request):
+    """Отправляет посты при прокрутке страницы"""
